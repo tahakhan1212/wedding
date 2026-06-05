@@ -26,12 +26,12 @@
             scrollbar-gutter: stable;
         }
 
-        /* SCROLL FRAMES CONTAINER */
-        body.frames-active {
+        /* SCROLL frame CONTAINER */
+        body.frame-active {
             overflow: hidden !important;
         }
 
-        #scrollFrames {
+        #scrollframe {
             position: fixed;
             top: 0;
             left: 0;
@@ -45,12 +45,12 @@
             overflow: hidden;
         }
 
-        #scrollFrames.active {
+        #scrollframe.active {
             display: flex;
         }
 
         /* Single image fills the screen */
-        #scrollFrames img {
+        #scrollframe img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -59,7 +59,7 @@
             left: 0;
         }
 
-        #scrollFrames.hide-frames {
+        #scrollframe.hide-frame {
             opacity: 0;
             transition: opacity 0.8s ease;
             pointer-events: none;
@@ -95,7 +95,7 @@
             animation: bounceArrow 2s ease-in-out infinite;
         }
 
-        @keyframes bounceArrow {
+        @keyframe bounceArrow {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(6px); }
         }
@@ -1122,7 +1122,7 @@
         }
 
         /* Animations */
-        @keyframes fadeInUp {
+        @keyframe fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -1208,8 +1208,8 @@
 <body>
 
     <!-- SCROLL-BASED FRAME ANIMATION -->
-    <div id="scrollFrames">
-        <img id="frameImg" src="frames/ezgif-frame-001.jpg" alt="Animation Frame">
+    <div id="scrollframe">
+        <img id="frameImg" src="frame/ezgif-frame-001.jpg" alt="Animation Frame">
     </div>
 
     <!-- SCROLL INDICATOR -->
@@ -1480,12 +1480,12 @@
 
     <script>
         // ===== SMOOTH SCROLL-CONTROLLED FRAME ANIMATION (like framer-motion) =====
-        const scrollFrames = document.getElementById('scrollFrames');
+        const scrollframe = document.getElementById('scrollframe');
         const frameImg = document.getElementById('frameImg');
         const mainContent = document.getElementById('mainContent');
         const scrollIndicator = document.getElementById('scrollIndicator');
 
-        const TOTAL_FRAMES = 120;
+        const TOTAL_frame = 120;
         let targetFrame = 1;       // where scroll says we should be (float)
         let displayedFrame = 1;    // what's currently on screen (float)
         let lastAppliedFrame = -1; // last integer frame that was set on img
@@ -1493,26 +1493,26 @@
         let rafId = null;
 
         // Preload all frame images
-        for (let i = 1; i <= TOTAL_FRAMES; i++) {
+        for (let i = 1; i <= TOTAL_frame; i++) {
             const num = String(i).padStart(3, '0');
             const img = new Image();
-            img.src = `frames/ezgif-frame-${num}.jpg`;
+            img.src = `frame/ezgif-frame-${num}.jpg`;
         }
 
-        // Activate frames + lock body scroll
-        scrollFrames.classList.add('active');
-        document.body.classList.add('frames-active');
+        // Activate frame + lock body scroll
+        scrollframe.classList.add('active');
+        document.body.classList.add('frame-active');
         scrollIndicator.classList.add('visible');
-        frameImg.src = `frames/ezgif-frame-001.jpg`;
+        frameImg.src = `frame/ezgif-frame-001.jpg`;
         lastAppliedFrame = 1;
 
         // Update the displayed image to a specific integer frame
         function applyFrame(frameNum) {
-            const clamped = Math.round(Math.max(1, Math.min(TOTAL_FRAMES, frameNum)));
+            const clamped = Math.round(Math.max(1, Math.min(TOTAL_frame, frameNum)));
             if (clamped === lastAppliedFrame) return;
             lastAppliedFrame = clamped;
             const num = String(clamped).padStart(3, '0');
-            frameImg.src = `frames/ezgif-frame-${num}.jpg`;
+            frameImg.src = `frame/ezgif-frame-${num}.jpg`;
         }
 
         // Interpolation loop — runs every frame via requestAnimationFrame
@@ -1529,7 +1529,7 @@
             applyFrame(displayedFrame);
 
             // Check if animation is finished
-            if (Math.round(displayedFrame) >= TOTAL_FRAMES && !isTransitioning) {
+            if (Math.round(displayedFrame) >= TOTAL_frame && !isTransitioning) {
                 startTransition();
                 return;
             }
@@ -1545,14 +1545,14 @@
         const SCROLL_FOR_FULL = 1500; // zyada scroll chahiye full animation k liye
 
         window.addEventListener('wheel', function (e) {
-            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (isTransitioning || !scrollframe.classList.contains('active')) return;
             e.preventDefault();
 
             totalScrollDelta += e.deltaY;
             totalScrollDelta = Math.max(0, Math.min(SCROLL_FOR_FULL, totalScrollDelta));
 
             const progress = totalScrollDelta / SCROLL_FOR_FULL;
-            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+            targetFrame = 1 + progress * (TOTAL_frame - 1);
         }, { passive: false });
 
         // TOUCH support
@@ -1560,20 +1560,20 @@
         let touchScrollDelta = 0;
 
         window.addEventListener('touchstart', function (e) {
-            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (isTransitioning || !scrollframe.classList.contains('active')) return;
             touchStartY = e.touches[0].clientY;
             touchScrollDelta = totalScrollDelta;
         }, { passive: true });
 
         window.addEventListener('touchmove', function (e) {
-            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (isTransitioning || !scrollframe.classList.contains('active')) return;
 
             const deltaY = touchStartY - e.touches[0].clientY;
             touchScrollDelta = Math.max(0, Math.min(SCROLL_FOR_FULL, touchScrollDelta + deltaY * 2));
             touchStartY = e.touches[0].clientY;
 
             const progress = touchScrollDelta / SCROLL_FOR_FULL;
-            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+            targetFrame = 1 + progress * (TOTAL_frame - 1);
         }, { passive: true });
 
         window.addEventListener('touchend', function () {
@@ -1582,7 +1582,7 @@
 
         // KEYBOARD: arrow up/down
         window.addEventListener('keydown', function (e) {
-            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (isTransitioning || !scrollframe.classList.contains('active')) return;
             if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
                 totalScrollDelta = Math.min(SCROLL_FOR_FULL, totalScrollDelta + 15);
             } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
@@ -1590,15 +1590,15 @@
             } else return;
             e.preventDefault();
             const progress = totalScrollDelta / SCROLL_FOR_FULL;
-            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+            targetFrame = 1 + progress * (TOTAL_frame - 1);
         });
 
         // CLICK on scroll indicator -> advance
         scrollIndicator.addEventListener('click', function () {
-            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (isTransitioning || !scrollframe.classList.contains('active')) return;
             totalScrollDelta = Math.min(SCROLL_FOR_FULL, totalScrollDelta + 30);
             const progress = totalScrollDelta / SCROLL_FOR_FULL;
-            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+            targetFrame = 1 + progress * (TOTAL_frame - 1);
         });
 
         function startTransition() {
@@ -1606,21 +1606,21 @@
             if (rafId) cancelAnimationFrame(rafId);
             scrollIndicator.classList.remove('visible');
 
-            // Lift content above frames
+            // Lift content above frame
             mainContent.style.position = 'relative';
             mainContent.style.zIndex = 9999;
 
-            // Fade frames out, fade content in (cross-fade)
-            scrollFrames.classList.remove('active');
-            scrollFrames.classList.add('hide-frames');
+            // Fade frame out, fade content in (cross-fade)
+            scrollframe.classList.remove('active');
+            scrollframe.classList.add('hide-frame');
             mainContent.classList.add('visible');
 
             setTimeout(function () {
-                scrollFrames.style.display = 'none';
-                scrollFrames.classList.remove('hide-frames');
+                scrollframe.style.display = 'none';
+                scrollframe.classList.remove('hide-frame');
                 mainContent.style.position = '';
                 mainContent.style.zIndex = '';
-                document.body.classList.remove('frames-active');
+                document.body.classList.remove('frame-active');
             }, 800);
         }
 
