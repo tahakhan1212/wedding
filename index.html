@@ -22,99 +22,16 @@
             background-color: #F5E6D3;
             font-family: 'Cormorant Garamond', serif;
             color: #5C4033;
-            overflow: hidden;
+            overflow-y: auto;
             scrollbar-gutter: stable;
         }
 
-        body.scrollable {
-            overflow-y: auto;
+        /* SCROLL FRAMES CONTAINER */
+        body.frames-active {
+            overflow: hidden !important;
         }
 
-        /* INTRO SCREEN */
-        #introScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: url('intro.png') center center / cover no-repeat;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-            cursor: pointer;
-        }
-
-        #introScreen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        #introScreen .press-text {
-            font-family: 'Great Vibes', cursive;
-            font-size: clamp(1.8rem, 5vw, 3rem);
-            color: #C9A77C;
-            text-align: center;
-            letter-spacing: 4px;
-            animation: pulseText 2s ease-in-out infinite;
-            text-shadow: 0 0 30px rgba(201, 167, 124, 0.3);
-            z-index: 2;
-            position: relative;
-        }
-
-        #introScreen .press-sub {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(0.8rem, 2vw, 1.1rem);
-            color: rgba(201, 167, 124, 0.5);
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            margin-top: 12px;
-            font-weight: 300;
-            z-index: 2;
-            position: relative;
-        }
-
-        #introScreen .bg-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, rgba(26, 26, 26, 0.4) 0%, #1a1a1a 100%);
-            
-            z-index: 1;
-        }
-
-        #introScreen .ornate-intro {
-            position: absolute;
-            width: 60%;
-            max-width: 400px;
-            opacity: 0.15;
-            z-index: 1;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes pulseText {
-
-            0%,
-            100% {
-                opacity: 0.7;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.03);
-            }
-        }
-
-        /* VIDEO */
-        #videoContainer {
+        #scrollFrames {
             position: fixed;
             top: 0;
             left: 0;
@@ -125,28 +42,70 @@
             display: none;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
-        #videoContainer.active {
+        #scrollFrames.active {
             display: flex;
         }
 
-        #videoContainer video {
+        /* Single image fills the screen */
+        #scrollFrames img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        #videoContainer.hide-video {
+        #scrollFrames.hide-frames {
             opacity: 0;
             transition: opacity 0.8s ease;
             pointer-events: none;
+        }
+
+        /* SCROLL INDICATOR */
+        #scrollIndicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9997;
+            color: #C9A77C;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        #scrollIndicator.visible {
+            opacity: 1;
+        }
+
+        #scrollIndicator .scroll-arrow {
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 4px;
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
         }
 
         /* MAIN CONTENT */
         #mainContent {
             opacity: 0;
             transition: opacity 0.8s ease;
+            position: relative;
+            z-index: 1;
         }
 
         #mainContent.visible {
@@ -954,19 +913,15 @@
                 grid-template-columns: repeat(3, 1fr);
                 gap: 6px;
             }
-
             .dress-card {
                 padding: 10px 6px 8px;
             }
-
             .dress-icon {
                 font-size: 1.3rem;
             }
-
             .dress-card h4 {
                 font-size: 1rem;
             }
-
             .dress-card p {
                 font-size: 0.6rem;
             }
@@ -1172,7 +1127,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1184,92 +1138,55 @@
             opacity: 0;
         }
 
-        .delay-1 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-2 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-3 {
-            animation-delay: 0.3s;
-        }
-
-        .delay-4 {
-            animation-delay: 0.4s;
-        }
-
-        .delay-5 {
-            animation-delay: 0.5s;
-        }
-
-        .delay-6 {
-            animation-delay: 0.6s;
-        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
 
         /* Responsive */
         @media (max-width:640px) {
-
-            #section1,
-            #section1 .bg-image,
-            #section1 .overlay {
+            #section1, #section1 .bg-image, #section1 .overlay {
                 border-radius: 120px 120px 16px 16px;
             }
-
             #section1 .ornate-border-section1 {
                 border-radius: 112px 112px 8px 8px;
             }
-
             #section1 .ornate-border-section1::before {
                 border-radius: 104px 104px 4px 4px;
             }
-
             .arch-frame {
                 border-radius: 120px 120px 12px 12px;
             }
-
             .ornate-border {
                 border-radius: 112px 112px 6px 6px;
             }
-
             .ornate-border::before {
                 border-radius: 104px 104px 4px 4px;
             }
-
             #section3 {
                 border-radius: 12px 12px 120px 120px;
             }
-
             #section3 .ornate-s3 {
                 border-radius: 6px 6px 112px 112px;
             }
-
             #section3 .ornate-s3::before {
                 border-radius: 4px 4px 104px 104px;
             }
-
             .s3-venue-img-wrap {
                 border-radius: 0 0 110px 110px;
             }
-
             .s3-venue-img {
                 height: 260px;
             }
-
             .countdown-unit {
                 min-width: 52px;
             }
-
             .countdown-colon {
                 font-size: 2.2rem;
             }
-
-            #section4,
-            #section5,
-            #section6,
-            #section7,
-            #section8 {
+            #section4, #section5, #section6, #section7, #section8 {
                 padding: 44px 18px 38px;
             }
         }
@@ -1278,11 +1195,9 @@
             .countdown-wrapper {
                 gap: 2px;
             }
-
             .countdown-unit {
                 min-width: 44px;
             }
-
             .s3-content {
                 padding: 52px 16px 32px;
             }
@@ -1292,23 +1207,15 @@
 
 <body>
 
-    <!-- INTRO SCREEN -->
-    <div id="introScreen">
-        <div class="bg-overlay"></div>
-        <svg class="ornate-intro" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M100 20C100 50 50 80 20 100C50 120 100 150 100 180C100 150 150 120 180 100C150 80 100 50 100 20Z"
-                stroke="#C9A77C" stroke-width="1.5" fill="none" opacity="0.6" />
-            <circle cx="100" cy="100" r="15" stroke="#C9A77C" stroke-width="1" fill="none" opacity="0.4" />
-        </svg>
-        <div class="press-text">Press Anywhere</div>
-        <div class="press-sub">to begin the experience</div>
+    <!-- SCROLL-BASED FRAME ANIMATION -->
+    <div id="scrollFrames">
+        <img id="frameImg" src="frames/ezgif-frame-001.jpg" alt="Animation Frame">
     </div>
 
-    <!-- VIDEO CONTAINER -->
-    <div id="videoContainer">
-        <video id="introVideo" playsinline muted>
-            <source src="images/video.mp4" type="video/mp4">
-        </video>
+    <!-- SCROLL INDICATOR -->
+    <div id="scrollIndicator">
+        Scroll down
+        <span class="scroll-arrow">↓</span>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -1539,8 +1446,7 @@
                     <button type="submit" class="btn-dua">Send Blessing</button>
                 </form>
                 <div class="fade-in delay-4" id="duaThanks" style="display:none; margin-top:18px;">
-                    <p class="text-lg italic" style="color:#b8864e;">✨ Jazakallah! Your blessings mean the world to us.
-                    </p>
+                    <p class="text-lg italic" style="color:#b8864e;">✨ Jazakallah! Your blessings mean the world to us.</p>
                 </div>
             </div>
         </section>
@@ -1573,43 +1479,152 @@
     </div>
 
     <script>
-        // INTRO / VIDEO SEQUENCE
-        const introScreen = document.getElementById('introScreen');
-        const videoContainer = document.getElementById('videoContainer');
-        const introVideo = document.getElementById('introVideo');
+        // ===== SMOOTH SCROLL-CONTROLLED FRAME ANIMATION (like framer-motion) =====
+        const scrollFrames = document.getElementById('scrollFrames');
+        const frameImg = document.getElementById('frameImg');
         const mainContent = document.getElementById('mainContent');
+        const scrollIndicator = document.getElementById('scrollIndicator');
 
-        introScreen.addEventListener('click', function () {
-            introScreen.classList.add('hidden');
-            videoContainer.classList.add('active');
-            introVideo.muted = false;
-            introVideo.play().catch(function () {
-                introVideo.muted = true;
-                introVideo.play();
-            });
+        const TOTAL_FRAMES = 120;
+        let targetFrame = 1;       // where scroll says we should be (float)
+        let displayedFrame = 1;    // what's currently on screen (float)
+        let lastAppliedFrame = -1; // last integer frame that was set on img
+        let isTransitioning = false;
+        let rafId = null;
+
+        // Preload all frame images
+        for (let i = 1; i <= TOTAL_FRAMES; i++) {
+            const num = String(i).padStart(3, '0');
+            const img = new Image();
+            img.src = `frames/ezgif-frame-${num}.jpg`;
+        }
+
+        // Activate frames + lock body scroll
+        scrollFrames.classList.add('active');
+        document.body.classList.add('frames-active');
+        scrollIndicator.classList.add('visible');
+        frameImg.src = `frames/ezgif-frame-001.jpg`;
+        lastAppliedFrame = 1;
+
+        // Update the displayed image to a specific integer frame
+        function applyFrame(frameNum) {
+            const clamped = Math.round(Math.max(1, Math.min(TOTAL_FRAMES, frameNum)));
+            if (clamped === lastAppliedFrame) return;
+            lastAppliedFrame = clamped;
+            const num = String(clamped).padStart(3, '0');
+            frameImg.src = `frames/ezgif-frame-${num}.jpg`;
+        }
+
+        // Interpolation loop — runs every frame via requestAnimationFrame
+        function animationLoop() {
+            // Lerp displayedFrame toward targetFrame
+            const diff = targetFrame - displayedFrame;
+            const speed = 0.10; // smooth aur responsive, zyada smoothness
+            if (Math.abs(diff) < 0.01) {
+                displayedFrame = targetFrame;
+            } else {
+                displayedFrame += diff * speed;
+            }
+
+            applyFrame(displayedFrame);
+
+            // Check if animation is finished
+            if (Math.round(displayedFrame) >= TOTAL_FRAMES && !isTransitioning) {
+                startTransition();
+                return;
+            }
+
+            rafId = requestAnimationFrame(animationLoop);
+        }
+
+        // Start the loop
+        rafId = requestAnimationFrame(animationLoop);
+
+        // WHEEL event - map scroll to progress
+        let totalScrollDelta = 0;
+        const SCROLL_FOR_FULL = 1500; // zyada scroll chahiye full animation k liye
+
+        window.addEventListener('wheel', function (e) {
+            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            e.preventDefault();
+
+            totalScrollDelta += e.deltaY;
+            totalScrollDelta = Math.max(0, Math.min(SCROLL_FOR_FULL, totalScrollDelta));
+
+            const progress = totalScrollDelta / SCROLL_FOR_FULL;
+            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+        }, { passive: false });
+
+        // TOUCH support
+        let touchStartY = 0;
+        let touchScrollDelta = 0;
+
+        window.addEventListener('touchstart', function (e) {
+            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            touchStartY = e.touches[0].clientY;
+            touchScrollDelta = totalScrollDelta;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', function (e) {
+            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+
+            const deltaY = touchStartY - e.touches[0].clientY;
+            touchScrollDelta = Math.max(0, Math.min(SCROLL_FOR_FULL, touchScrollDelta + deltaY * 2));
+            touchStartY = e.touches[0].clientY;
+
+            const progress = touchScrollDelta / SCROLL_FOR_FULL;
+            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+        }, { passive: true });
+
+        window.addEventListener('touchend', function () {
+            totalScrollDelta = touchScrollDelta;
+        }, { passive: true });
+
+        // KEYBOARD: arrow up/down
+        window.addEventListener('keydown', function (e) {
+            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                totalScrollDelta = Math.min(SCROLL_FOR_FULL, totalScrollDelta + 15);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                totalScrollDelta = Math.max(0, totalScrollDelta - 15);
+            } else return;
+            e.preventDefault();
+            const progress = totalScrollDelta / SCROLL_FOR_FULL;
+            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
         });
 
-        introVideo.addEventListener('ended', function () {
-            // Simultaneous crossfade: video fades out while main content fades in
-            videoContainer.classList.add('hide-video');
+        // CLICK on scroll indicator -> advance
+        scrollIndicator.addEventListener('click', function () {
+            if (isTransitioning || !scrollFrames.classList.contains('active')) return;
+            totalScrollDelta = Math.min(SCROLL_FOR_FULL, totalScrollDelta + 30);
+            const progress = totalScrollDelta / SCROLL_FOR_FULL;
+            targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+        });
+
+        function startTransition() {
+            isTransitioning = true;
+            if (rafId) cancelAnimationFrame(rafId);
+            scrollIndicator.classList.remove('visible');
+
+            // Lift content above frames
+            mainContent.style.position = 'relative';
+            mainContent.style.zIndex = 9999;
+
+            // Fade frames out, fade content in (cross-fade)
+            scrollFrames.classList.remove('active');
+            scrollFrames.classList.add('hide-frames');
             mainContent.classList.add('visible');
-            document.body.classList.add('scrollable');
-            window.scrollTo(0, 0);
+
             setTimeout(function () {
-                videoContainer.style.display = 'none';
-                videoContainer.classList.remove('hide-video');
+                scrollFrames.style.display = 'none';
+                scrollFrames.classList.remove('hide-frames');
+                mainContent.style.position = '';
+                mainContent.style.zIndex = '';
+                document.body.classList.remove('frames-active');
             }, 800);
-        });
+        }
 
-        introVideo.addEventListener('error', function () {
-            introScreen.classList.add('hidden');
-            videoContainer.style.display = 'none';
-            mainContent.classList.add('visible');
-            document.body.classList.add('scrollable');
-            window.scrollTo(0, 0);
-        });
-
-        // COUNTDOWN
+        // ===== COUNTDOWN =====
         const weddingDate = new Date('2028-05-30T16:00:00+05:00');
         function updateCountdown() {
             const diff = weddingDate - new Date();
@@ -1629,7 +1644,7 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
-        // RSVP
+        // ===== RSVP =====
         function handleRSVP(e) {
             e.preventDefault();
             const btn = e.target.querySelector('.btn-rsvp');
@@ -1639,7 +1654,7 @@
             return false;
         }
 
-        // DUA
+        // ===== DUA =====
         function handleDua(e) {
             e.preventDefault();
             const btn = e.target.querySelector('.btn-dua');
@@ -1651,7 +1666,7 @@
             return false;
         }
 
-        // SHARE
+        // ===== SHARE =====
         function shareInvitation() {
             if (navigator.share) {
                 navigator.share({ title: 'Tuaha & Laiba Wedding', text: 'You are cordially invited to the wedding of Tuaha & Laiba on 30 May 2028!', url: window.location.href }).catch(() => { });
