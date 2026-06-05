@@ -39,14 +39,10 @@
             height: 100vh;
             z-index: 9998;
             background: #F5E6D3;
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-        }
-
-        #scrollframe.active {
-            display: flex;
         }
 
         /* Single image fills the screen */
@@ -95,17 +91,21 @@
             animation: bounceArrow 2s ease-in-out infinite;
         }
 
-        @keyframe bounceArrow {
+        @keyframes bounceArrow {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(6px); }
         }
 
-        /* MAIN CONTENT */
+        /* MAIN CONTENT — hidden by default, revealed only after frame transition */
         #mainContent {
             opacity: 0;
             transition: opacity 0.8s ease;
             position: relative;
             z-index: 1;
+        }
+
+        body.frame-active #mainContent {
+            opacity: 0 !important;
         }
 
         #mainContent.visible {
@@ -1121,29 +1121,54 @@
             margin-top: 16px;
         }
 
-        /* Animations */
-        @keyframe fadeInUp {
-            from {
+        /* ===== Section 1 Subtle Fade-In ===== */
+        @keyframes subtleFadeIn {
+            0% {
                 opacity: 0;
                 transform: translateY(20px);
             }
-            to {
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .fade-in {
-            animation: fadeInUp 0.8s ease-out forwards;
+        .s1-fade {
             opacity: 0;
+            transform: translateY(20px);
         }
 
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-        .delay-5 { animation-delay: 0.5s; }
-        .delay-6 { animation-delay: 0.6s; }
+        .s1-fade.animate {
+            animation: subtleFadeIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Animations */
+        @keyframes dramaticReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.4) translateY(60px) rotate(-3deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.06) translateY(-6px) rotate(0.5deg);
+            }
+            75% {
+                transform: scale(0.96) translateY(3px) rotate(-0.2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0deg);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: scale(0.4) translateY(60px) rotate(-3deg);
+        }
+
+        .fade-in.animate {
+            animation: dramaticReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
 
         /* Responsive */
         @media (max-width:640px) {
@@ -1202,10 +1227,59 @@
                 padding: 52px 16px 32px;
             }
         }
+
+        /* ===== CONFETTI CANVAS ===== */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10000;
+            pointer-events: none;
+            display: none;
+        }
+        #confettiCanvas.active {
+            display: block;
+        }
+
+        /* ===== GOLDEN FLASH OVERLAY ===== */
+        #goldenFlash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: radial-gradient(circle at 50% 50%, rgba(212,175,55,0.3) 0%, rgba(201,167,124,0.08) 30%, transparent 65%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        #goldenFlash.active {
+            opacity: 1;
+        }
+        #goldenFlash.fade {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        /* ===== SUPPRESS CONTENT ANIMS WHILE FRAME IS ACTIVE ===== */
+        body.frame-active #mainContent .fade-in {
+            animation: none !important;
+            opacity: 0 !important;
+            transform: scale(0.4) translateY(60px) rotate(-3deg) !important;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- CONFETTI CANVAS -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- GOLDEN FLASH -->
+    <div id="goldenFlash"></div>
 
     <!-- SCROLL-BASED FRAME ANIMATION -->
     <div id="scrollframe">
@@ -1227,19 +1301,19 @@
             <div class="overlay"></div>
             <div class="ornate-border-section1"></div>
             <div class="content">
-                <p class="arabic-text text-2xl md:text-3xl font-medium mb-1" style="color:#7a5a44;">بِسْمِ اللهِ
+                <p class="s1-fade arabic-text text-2xl md:text-3xl font-medium mb-1" style="color:#7a5a44;">بِسْمِ اللهِ
                     الرَّحْمٰنِ الرَّحِيْمِ</p>
-                <div class="s1-divider" style="margin-top:12px;"></div>
-                <div class="mt-2"><span class="s1-blessing">— In the name of Love —</span></div>
-                <div class="mt-6">
+                <div class="s1-fade s1-divider" style="margin-top:12px;"></div>
+                <div class="s1-fade mt-2"><span class="s1-blessing">— In the name of Love —</span></div>
+                <div class="s1-fade mt-6">
                     <div class="s1-names">Tuaha</div>
                     <span class="s1-ampersand">&</span>
                     <div class="s1-names">Laiba</div>
                 </div>
-                <div class="s1-divider"></div>
+                <div class="s1-fade s1-divider"></div>
                 <div>
-                    <div class="s1-date">30 May 2028</div>
-                    <p class="text-base md:text-lg font-light tracking-wide mt-4 italic" style="color:#8b6946;">An
+                    <div class="s1-fade s1-date">30 May 2028</div>
+                    <p class="s1-fade text-base md:text-lg font-light tracking-wide mt-4 italic" style="color:#8b6946;">An
                         evening of union, prayers & everlasting grace</p>
                 </div>
             </div>
@@ -1610,10 +1684,21 @@
             mainContent.style.position = 'relative';
             mainContent.style.zIndex = 9999;
 
-            // Fade frame out, fade content in (cross-fade)
-            scrollframe.classList.remove('active');
-            scrollframe.classList.add('hide-frame');
-            mainContent.classList.add('visible');
+            const flash = document.getElementById('goldenFlash');
+            flash.classList.add('active');
+
+            // Confetti burst
+            fireConfettiDouble();
+
+            // After brief flash, fade frame out & show content
+            setTimeout(function () {
+                flash.classList.remove('active');
+                flash.classList.add('fade');
+
+                scrollframe.classList.remove('active');
+                scrollframe.classList.add('hide-frame');
+                mainContent.classList.add('visible');
+            }, 200);
 
             setTimeout(function () {
                 scrollframe.style.display = 'none';
@@ -1621,7 +1706,138 @@
                 mainContent.style.position = '';
                 mainContent.style.zIndex = '';
                 document.body.classList.remove('frame-active');
-            }, 800);
+                flash.classList.remove('fade');
+
+                // Animate section 1 elements with subtle fade-in
+                const s1Fades = document.querySelectorAll('#section1 .s1-fade');
+                s1Fades.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('animate');
+                    }, 80 + i * 120);
+                });
+
+                // Start observing sections for scroll-triggered animations
+                observeSections();
+            }, 600);
+        }
+
+        // ===== CONFETTI PARTICLE SYSTEM =====
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext('2d');
+        let confettiPieces = [];
+        let confettiAnimationId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const confettiColors = ['#C9A77C', '#D4AF37', '#F5E6D3', '#b8864e', '#8B6914', '#D4B896', '#FDF8F1', '#E8D5B7'];
+
+        class ConfettiPiece {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20 - Math.random() * 100;
+                this.w = 6 + Math.random() * 8;
+                this.h = 4 + Math.random() * 6;
+                this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = 2 + Math.random() * 4;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.15;
+                this.opacity = 0.9 + Math.random() * 0.1;
+                this.gravity = 0.04 + Math.random() * 0.03;
+                this.drag = 0.98;
+            }
+
+            update() {
+                this.vy += this.gravity;
+                this.vx *= this.drag;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotSpeed;
+                if (this.opacity > 0.2) this.opacity -= 0.002;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+                ctx.restore();
+            }
+        }
+
+        function burstConfetti(count) {
+            for (let i = 0; i < count; i++) {
+                const p = new ConfettiPiece();
+                p.x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width * 0.8;
+                p.vy = -8 - Math.random() * 10;
+                p.vx = (Math.random() - 0.5) * 12;
+                confettiPieces.push(p);
+            }
+            canvas.classList.add('active');
+
+            if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiPieces = confettiPieces.filter(p => p.opacity > 0.01 && p.y < canvas.height + 50);
+                confettiPieces.forEach(p => { p.update(); p.draw(); });
+
+                if (confettiPieces.length > 0) {
+                    confettiAnimationId = requestAnimationFrame(loop);
+                } else {
+                    canvas.classList.remove('active');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    confettiAnimationId = null;
+                }
+            }
+            loop();
+        }
+
+        function fireConfettiDouble() {
+            burstConfetti(120);
+            setTimeout(() => burstConfetti(80), 300);
+        }
+
+        // ===== SCROLL-BASED SECTION ANIMATIONS =====
+        let sectionObserver = null;
+
+        function observeSections() {
+            if (sectionObserver) return;
+
+            const sections = document.querySelectorAll('#mainContent > section');
+            if (!sections.length) return;
+
+            sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const section = entry.target;
+                        const fadeEls = section.querySelectorAll('.fade-in');
+                        let delay = 0;
+                        fadeEls.forEach((el, i) => {
+                            delay = 80 + i * 100;
+                            setTimeout(() => {
+                                el.classList.add('animate');
+                            }, delay);
+                        });
+                        sectionObserver.unobserve(section);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px -80px 0px',
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
         }
 
         // ===== COUNTDOWN =====
